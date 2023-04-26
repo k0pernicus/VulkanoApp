@@ -19,7 +19,7 @@ This repository includes:
 This repository includes extern repositories / dependencies, like `imgui`, `vma`, or `glm`.
 I tend to avoid git submodules as much as possible, so this repository contains everything to build and run the application.
 
-The Vulkan engine uses `VMA` as memory allocator dependency. 
+The application uses `VMA` as memory allocator dependency. 
 
 Thanks to the ImGui and GLM teams for providing such great tools for free.
 
