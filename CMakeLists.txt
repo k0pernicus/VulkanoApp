@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18.1)
-project(frametech-template)
+project(vulkano)
 
 if(NOT CMAKE_BUILD_TYPE)
     message("Setting build type as 'Debug' - please force 'Debug' to build with debug symbols and extra symbols")
@@ -12,7 +12,7 @@ else()
 	set(BUILD_NAME ${PROJECT_NAME})
 endif()
 
-message("FrameTech-Template build for ${CMAKE_SYSTEM_NAME}")
+message("vulkano build for ${CMAKE_SYSTEM_NAME}")
 
 add_subdirectory("extern/glm")
 add_subdirectory("extern/glfw")
@@ -115,7 +115,7 @@ target_link_libraries(${BUILD_NAME} app glm imgui glfw ${VULKAN_1_LIB})
 
 # Copy the shaders folder, as a custom POST command
 message("Copying the shaders/ folder, from ${CMAKE_SOURCE_DIR} to ${CMAKE_BINARY_DIR}")
-add_custom_command(TARGET ${BUILD_NAME} POST_BUILD 
+add_custom_command(TARGET ${BUILD_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_SOURCE_DIR}/shaders/
 			${CMAKE_CURRENT_BINARY_DIR}/shaders/

@@ -1,6 +1,5 @@
 //
 //  application.cpp
-//  FrameTech
 //
 //  Created by Antonin on 18/09/2022.
 //

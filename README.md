@@ -1,4 +1,4 @@
-# FrameTech Template
+# Vulkano App
 
 A template to build and deploy easily **Vulkan** applications, for Windows and macOS.
 

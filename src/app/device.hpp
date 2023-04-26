@@ -27,7 +27,7 @@ namespace app
             USED,
         };
 
-        /// @brief Enumerates the features supported, or requested, by FrameTech
+        /// @brief Enumerates the features supported, or requested
         enum SupportFeatures
         {
             NOONE = 0x00000000,

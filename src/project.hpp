@@ -1,6 +1,5 @@
 //
 //  project.hpp
-//  FrameTech
 //
 //  Created by Antonin on 23/09/2022.
 //
