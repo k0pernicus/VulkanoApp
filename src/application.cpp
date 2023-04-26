@@ -5,9 +5,9 @@
 //
 
 #include "application.hpp"
+#include "project.hpp"
 #include "utils/debug_tools.h"
 #include "utils/timer.h"
-#include "project.hpp"
 
 #ifdef IMGUI
 #include "backends/imgui_impl_glfw.h"

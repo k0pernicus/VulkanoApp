@@ -9,17 +9,17 @@
 #define application_hpp
 
 #include "app/engine.hpp"
-#include "utils/timer.h"
 #include "project.hpp"
 #include "utils/debug_tools.h"
 #include "utils/result.h"
+#include "utils/timer.h"
 #include <GLFW/glfw3.h>
 #include <optional>
 
 #ifdef IMGUI
-#include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_vulkan.h"
+#include "imgui.h"
 #endif
 
 #ifdef NO_AVG_FPS_RECORDS

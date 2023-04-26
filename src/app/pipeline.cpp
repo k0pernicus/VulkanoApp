@@ -5,11 +5,11 @@
 //
 
 #include "pipeline.hpp"
-#include "engine.hpp"
 #include "../utils/debug_tools.h"
 #include "../utils/result.h"
-#include "shaders.h"
+#include "engine.hpp"
 #include "memory.hpp"
+#include "shaders.h"
 #include <assert.h>
 #include <filesystem>
 #include <fstream>
@@ -99,8 +99,8 @@ std::optional<uint64_t> app::graphics::Pipeline::fileSize(const char* filepath)
 }
 
 std::optional<uint64_t> app::graphics::Pipeline::readFile(const char* filepath,
-                                                                char** buffer,
-                                                                uint64_t buffer_length)
+                                                          char** buffer,
+                                                          uint64_t buffer_length)
 {
     std::ifstream file(filepath, std::ifstream::binary | std::ifstream::ate);
     assert(file);
@@ -127,7 +127,7 @@ std::optional<uint64_t> app::graphics::Pipeline::readFile(const char* filepath,
 }
 
 utils::Result<std::vector<app::graphics::Shader::Module>> app::graphics::Pipeline::createGraphicsApplication(const char* vertex_shader_filepath,
-                                                                                                                         const char* fragment_shader_filepath)
+                                                                                                             const char* fragment_shader_filepath)
 {
     // Get the length
     const auto vs_file_size_opt = fileSize(vertex_shader_filepath);
@@ -151,7 +151,7 @@ utils::Result<std::vector<app::graphics::Shader::Module>> app::graphics::Pipelin
     readFile(fragment_shader_filepath, &fs_buffer, fs_file_size);
     Log("> For FS file '%s', read file ok (%d bytes)", fragment_shader_filepath, fs_file_size);
     std::vector<app::graphics::Shader::Module> shader_modules(
-        { app::graphics::Shader::Module{
+        {app::graphics::Shader::Module{
              .m_code = fs_buffer,
              .m_size = fs_file_size,
              .m_tag = (char*)fragment_shader_filepath,
@@ -448,59 +448,59 @@ utils::VResult app::graphics::Pipeline::createVertexBuffer() noexcept
     // This buffer can be used as source in a memory transfer operation
     VkBuffer staging_buffer{};
     VmaAllocation staging_buffer_allocation{};
-    if (const auto result = app::graphics::Memory::initBuffer(
-            resource_allocator,
-            &staging_buffer_allocation,
-            graphics_device,
-            buffer_size,
-            staging_buffer,
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-        result.IsError())
-        return result;
+    // if (const auto result = app::graphics::Memory::initBuffer(
+    //         resource_allocator,
+    //         &staging_buffer_allocation,
+    //         graphics_device,
+    //         buffer_size,
+    //         staging_buffer,
+    //         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+    //     result.IsError())
+    //     return result;
 
-    // Now, fill the staging buffer with the actual data
-    void* data;
-    vmaMapMemory(resource_allocator, staging_buffer_allocation, &data);
-    // TODO: fix the memcpy
-    memcpy(data, nullptr, (size_t)buffer_size);
-    vmaUnmapMemory(resource_allocator, staging_buffer_allocation);
+    // // Now, fill the staging buffer with the actual data
+    // void* data;
+    // vmaMapMemory(resource_allocator, staging_buffer_allocation, &data);
+    // // TODO: fix the memcpy
+    // memcpy(data, nullptr, (size_t)buffer_size);
+    // vmaUnmapMemory(resource_allocator, staging_buffer_allocation);
 
-    // Initialize the actual vertex buffer
-    // This buffer can be used as destination in a memory transfert operation
-    if (m_vertex_buffer != VK_NULL_HANDLE)
-    {
-        LogW("the vertex buffer has already been intialized - resetting it...");
-        vmaDestroyBuffer(resource_allocator, m_vertex_buffer, m_index_buffer_allocation);
-        m_index_buffer_allocation = VK_NULL_HANDLE;
-    }
-    m_vertex_buffer = VkBuffer();
-    if (const auto result = app::graphics::Memory::initBuffer(
-            resource_allocator,
-            &m_vertex_buffer_allocation,
-            graphics_device,
-            buffer_size,
-            m_vertex_buffer,
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-        result.IsError())
-        return result;
+    // // Initialize the actual vertex buffer
+    // // This buffer can be used as destination in a memory transfert operation
+    // if (m_vertex_buffer != VK_NULL_HANDLE)
+    // {
+    //     LogW("the vertex buffer has already been intialized - resetting it...");
+    //     vmaDestroyBuffer(resource_allocator, m_vertex_buffer, m_index_buffer_allocation);
+    //     m_index_buffer_allocation = VK_NULL_HANDLE;
+    // }
+    // m_vertex_buffer = VkBuffer();
+    // if (const auto result = app::graphics::Memory::initBuffer(
+    //         resource_allocator,
+    //         &m_vertex_buffer_allocation,
+    //         graphics_device,
+    //         buffer_size,
+    //         m_vertex_buffer,
+    //         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+    //     result.IsError())
+    //     return result;
 
-    // Now, copy the data
-    if (const auto operation_result = app::graphics::Memory::copyBuffer(
-            graphics_device,
-            staging_buffer,
-            m_vertex_buffer,
-            transfert_command_pool,
-            transfert_queue,
-            buffer_size);
-        operation_result.IsError())
-    {
-        vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
-        staging_buffer_allocation = VK_NULL_HANDLE;
-        return operation_result;
-    }
+    // // Now, copy the data
+    // if (const auto operation_result = app::graphics::Memory::copyBuffer(
+    //         graphics_device,
+    //         staging_buffer,
+    //         m_vertex_buffer,
+    //         transfert_command_pool,
+    //         transfert_queue,
+    //         buffer_size);
+    //     operation_result.IsError())
+    // {
+    //     vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
+    //     staging_buffer_allocation = VK_NULL_HANDLE;
+    //     return operation_result;
+    // }
 
-    vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
-    staging_buffer_allocation = VK_NULL_HANDLE;
+    // vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
+    // staging_buffer_allocation = VK_NULL_HANDLE;
 
     return utils::VResult::Ok();
 }
@@ -525,60 +525,60 @@ utils::VResult app::graphics::Pipeline::createIndexBuffer() noexcept
     // This buffer can be used as source in a memory transfer operation
     VkBuffer staging_buffer{};
     VmaAllocation staging_buffer_allocation{};
-    if (const auto result = app::graphics::Memory::initBuffer(
-            resource_allocator,
-            &staging_buffer_allocation,
-            graphics_device,
-            buffer_size,
-            staging_buffer,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-        result.IsError())
-        return result;
+    // if (const auto result = app::graphics::Memory::initBuffer(
+    //         resource_allocator,
+    //         &staging_buffer_allocation,
+    //         graphics_device,
+    //         buffer_size,
+    //         staging_buffer,
+    //         VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+    //     result.IsError())
+    //     return result;
 
-    // Now, fill the staging buffer with the actual data
-    void* data;
-    vmaMapMemory(resource_allocator, staging_buffer_allocation, &data);
-    // TODO: fix the memcpy
-    memcpy(data, nullptr, (size_t)buffer_size);
-    vmaUnmapMemory(resource_allocator, staging_buffer_allocation);
+    // // Now, fill the staging buffer with the actual data
+    // void* data;
+    // vmaMapMemory(resource_allocator, staging_buffer_allocation, &data);
+    // // TODO: fix the memcpy
+    // memcpy(data, nullptr, (size_t)buffer_size);
+    // vmaUnmapMemory(resource_allocator, staging_buffer_allocation);
 
-    // Initialize the actual vertex buffer
-    // This buffer can be used as destination in a memory transfert operation
-    if (m_index_buffer != VK_NULL_HANDLE)
-    {
-        LogW("the index buffer has already been intialized - resetting it...");
-        vmaDestroyBuffer(resource_allocator, m_index_buffer, m_index_buffer_allocation);
-        m_index_buffer_allocation = VK_NULL_HANDLE;
-    }
-    m_index_buffer = VkBuffer();
-    m_index_buffer_allocation = {};
-    if (const auto result = app::graphics::Memory::initBuffer(
-            resource_allocator,
-            &m_index_buffer_allocation,
-            graphics_device,
-            buffer_size,
-            m_index_buffer,
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-        result.IsError())
-        return result;
+    // // Initialize the actual vertex buffer
+    // // This buffer can be used as destination in a memory transfert operation
+    // if (m_index_buffer != VK_NULL_HANDLE)
+    // {
+    //     LogW("the index buffer has already been intialized - resetting it...");
+    //     vmaDestroyBuffer(resource_allocator, m_index_buffer, m_index_buffer_allocation);
+    //     m_index_buffer_allocation = VK_NULL_HANDLE;
+    // }
+    // m_index_buffer = VkBuffer();
+    // m_index_buffer_allocation = {};
+    // if (const auto result = app::graphics::Memory::initBuffer(
+    //         resource_allocator,
+    //         &m_index_buffer_allocation,
+    //         graphics_device,
+    //         buffer_size,
+    //         m_index_buffer,
+    //         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    //     result.IsError())
+    //     return result;
 
-    // Now, copy the data
-    if (const auto operation_result = app::graphics::Memory::copyBuffer(
-            graphics_device,
-            staging_buffer,
-            m_index_buffer,
-            transfert_command_pool,
-            transfert_queue,
-            buffer_size);
-        operation_result.IsError())
-    {
-        vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
-        staging_buffer_allocation = VK_NULL_HANDLE;
-        return operation_result;
-    }
+    // // Now, copy the data
+    // if (const auto operation_result = app::graphics::Memory::copyBuffer(
+    //         graphics_device,
+    //         staging_buffer,
+    //         m_index_buffer,
+    //         transfert_command_pool,
+    //         transfert_queue,
+    //         buffer_size);
+    //     operation_result.IsError())
+    // {
+    //     vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
+    //     staging_buffer_allocation = VK_NULL_HANDLE;
+    //     return operation_result;
+    // }
 
-    vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
-    staging_buffer_allocation = VK_NULL_HANDLE;
+    // vmaDestroyBuffer(resource_allocator, staging_buffer, staging_buffer_allocation);
+    // staging_buffer_allocation = VK_NULL_HANDLE;
 
     return utils::VResult::Ok();
 }
