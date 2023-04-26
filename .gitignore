@@ -399,3 +399,5 @@ FodyWeavers.xsd
 
 # Output build
 out/
+build/
+.DS_Store
